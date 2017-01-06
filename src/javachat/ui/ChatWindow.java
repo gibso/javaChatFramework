@@ -1,7 +1,6 @@
 package javachat.ui;
 
 import java.awt.GraphicsEnvironment;
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -11,46 +10,46 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import javachat.network.Client;
-import plugins.ClearChat;
 import javachat.JavaChat;
 import javax.swing.BoundedRangeModel;
-import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.ParallelGroup;
+import javax.swing.GroupLayout.SequentialGroup;
+
+import interfaces.ButtonPlugin;
+import interfaces.ChatProvider;
+import interfaces.ComboBoxPlugin;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JScrollBar;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
-public class ChatWindow extends javax.swing.JFrame implements ChatProvider{
-
+public class ChatWindow extends JFrame implements ChatProvider {
 
 	// Variables declaration - do not modify//GEN-BEGIN:variables
 	private javax.swing.ButtonGroup buttonGroupModeType;
-	
-	// #if clearChat
-	private javax.swing.JButton jButtonClear;
-	// #endif
-	
+
 	private javax.swing.JButton jButtonSend;
-	
+
 	// #if setNickname
 	private javax.swing.JButton jButtonUpdateName;
 	// #endif
-	
+
 	private javax.swing.JLabel jLabel1;
 	private javax.swing.JLabel jLabelHost;
 	private javax.swing.JLabel jLabelPort;
 	private javax.swing.JRadioButton jRadioButtonClient;
 	private javax.swing.JRadioButton jRadioButtonServer;
 	private javax.swing.JScrollPane jScrollPane1;
-	
+
 	private javax.swing.JTextArea jTextAreaChat;
-	
+
 	private javax.swing.JTextField jTextFieldHostname;
 	private javax.swing.JTextField jTextFieldMessage;
 	private javax.swing.JTextField jTextFieldName;
@@ -58,27 +57,20 @@ public class ChatWindow extends javax.swing.JFrame implements ChatProvider{
 	private javax.swing.JToggleButton jToggleButtonOnline;
 	// End of variables declaration//GEN-END:variables
 
-	// Feature variables
-	
-	// #if changeChatBgColor
-	private javax.swing.JButton jButtonChatBgColor;
-	private javax.swing.JColorChooser jColorChooserChatBgColor;
-	// #endif
-	
 	// #if changeSize
 	private javax.swing.JTextField jTextFieldFontsize;
 	private javax.swing.JButton jButtonFontsize;
 	// #endif
-	
-	// #if changeType
-	private javax.swing.JComboBox jComboBoxFonttype;
-	// #endif
-	
+
+//	// #if changeType
+//	private javax.swing.JComboBox jComboBoxFonttype;
+//	// #endif
+
 	// #if changeStyle
 	private javax.swing.JButton jButtonBold;
 	private javax.swing.JButton jButtonItalic;
 	// #endif
-	
+
 	// #if setAbout
 	private javax.swing.ButtonGroup buttonGroupGender;
 	private javax.swing.JRadioButton jRadioButtonMale;
@@ -89,16 +81,26 @@ public class ChatWindow extends javax.swing.JFrame implements ChatProvider{
 	private javax.swing.JLabel jLabelBirthday;
 	private javax.swing.JLabel jLabelEMail;
 	// #endif
-	
-	// framework variable
-	private Plugin plugin;
 
+	// framework variables
+	private ArrayList<ButtonPlugin> buttonPlugins;
+	private ArrayList<ComboBoxPlugin> comboBoxPlugins;
+	
 	/**
 	 * Creates new form ChatWindow
 	 */
-	public ChatWindow(Plugin p) {
-		this.plugin = p;
-		p.register(this);
+	public ChatWindow(ArrayList<ButtonPlugin> buttonPlugins, ArrayList<ComboBoxPlugin> comboBoxPlugins) {
+		this.buttonPlugins = buttonPlugins;
+		this.comboBoxPlugins = comboBoxPlugins;
+
+		for (int i = 0; i < buttonPlugins.size(); i++) {
+			buttonPlugins.get(i).register(this);
+		}
+
+		for (int i = 0; i < comboBoxPlugins.size(); i++) {
+			comboBoxPlugins.get(i).register(this);
+		}
+
 		initComponents();
 		this.setTitle("Java Chat");
 	}
@@ -112,8 +114,6 @@ public class ChatWindow extends javax.swing.JFrame implements ChatProvider{
 	// <editor-fold defaultstate="collapsed" desc="Generated
 	// Code">//GEN-BEGIN:initComponents
 	private void initComponents() {
-		
-	
 
 		buttonGroupModeType = new javax.swing.ButtonGroup();
 		jRadioButtonServer = new javax.swing.JRadioButton();
@@ -125,37 +125,13 @@ public class ChatWindow extends javax.swing.JFrame implements ChatProvider{
 		jToggleButtonOnline = new javax.swing.JToggleButton();
 		jTextFieldMessage = new javax.swing.JTextField();
 		jScrollPane1 = new javax.swing.JScrollPane();
-		
+
 		jTextAreaChat = new javax.swing.JTextArea();
-		
+
 		jButtonSend = new javax.swing.JButton();
 		jTextFieldName = new javax.swing.JTextField();
 		jLabel1 = new javax.swing.JLabel();
-		
-		
-		// framework- plugin button
-		JButton button = new JButton();
-		
-		button.setText(plugin.getButtonText());
-		
-		button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				plugin.ButtonClicked();
-			}
-		});
-		
-		
-		// #if clearChat
-		jButtonClear = new javax.swing.JButton();
-		
-		jButtonClear.setText(this.plugin.getButtonText());
-		jButtonClear.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jButtonClearActionPerformed(evt);
-			}
-		});
-		// #endif
-		
+
 		// #if setNickname
 		jButtonUpdateName = new javax.swing.JButton();
 
@@ -167,37 +143,18 @@ public class ChatWindow extends javax.swing.JFrame implements ChatProvider{
 			}
 		});
 		// #endif
-		
-		// #if changeChatBgColor
-		jButtonChatBgColor = new javax.swing.JButton();
-		jButtonChatBgColor.setText("Chat BG-Color");
 
-		jButtonChatBgColor.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-
-				Color initialBackground = jTextAreaChat.getBackground();
-
-				Color background = javax.swing.JColorChooser.showDialog(null, "Change Button Background",
-						initialBackground);
-				if (background != null) {
-					jTextAreaChat.setBackground(background);
-				}
-			}
-		});
-		// #endif
-		
-		
 		// #if changeSize
 		jTextFieldFontsize = new javax.swing.JTextField();
 		jButtonFontsize = new javax.swing.JButton();
-		
+
 		jTextFieldFontsize.setText("12");
 		jButtonFontsize.setText("Set Size");
 		jButtonFontsize.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				jButtonFontsizeActionPerformed(evt);
 			}
-		
+
 			private void jButtonFontsizeActionPerformed(ActionEvent evt) {
 
 				// Change Fontsize to chosen Number
@@ -209,36 +166,17 @@ public class ChatWindow extends javax.swing.JFrame implements ChatProvider{
 			}
 		});
 		// #endif
-				
-		// #if changeType
-		String List[] = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-		jComboBoxFonttype = new javax.swing.JComboBox(List);
-		
-		jComboBoxFonttype.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jComboBoxChangeType(evt);
-			}
-			private void jComboBoxChangeType(ActionEvent evt) {
-				// Change Fonttype to chosen font
-				JComboBox cb = (JComboBox) evt.getSource();
-				String fontName = (String) cb.getSelectedItem();
-				int fontsize = jTextAreaChat.getFont().getSize();
-
-				// get the correct TextField
-				jTextAreaChat.setFont(new Font(fontName, Font.PLAIN, fontsize));
-			}
-		});
-		// #endif
 
 		// #if changeStyle
 		jButtonBold = new javax.swing.JButton();
 		jButtonItalic = new javax.swing.JButton();
-		
+
 		jButtonBold.setText("B");
 		jButtonBold.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				jButtonBoldActionPerformed(evt);
 			}
+
 			private void jButtonBoldActionPerformed(ActionEvent evt) {
 				// TODO Auto-generated method stub
 			}
@@ -249,12 +187,13 @@ public class ChatWindow extends javax.swing.JFrame implements ChatProvider{
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				jButtonItalicActionPerformed(evt);
 			}
+
 			private void jButtonItalicActionPerformed(ActionEvent evt) {
 				// TODO Auto-generated method stub
 			}
 		});
-		// #endif	
-		
+		// #endif
+
 		// #if setAbout
 		jLabelBirthday = new javax.swing.JLabel();
 		jLabelGender = new javax.swing.JLabel();
@@ -264,7 +203,7 @@ public class ChatWindow extends javax.swing.JFrame implements ChatProvider{
 		jRadioButtonFemale = new javax.swing.JRadioButton();
 		jTextFieldEMail = new javax.swing.JTextField();
 		jTextFieldDate = new javax.swing.JTextField();
-		
+
 		buttonGroupGender.add(jRadioButtonMale);
 		jRadioButtonMale.setText("Male");
 		buttonGroupGender.add(jRadioButtonFemale);
@@ -273,7 +212,7 @@ public class ChatWindow extends javax.swing.JFrame implements ChatProvider{
 		jLabelGender.setText("Gender:");
 		jLabelBirthday.setText("Birthday:");
 		jLabelEMail.setText("Email-Address:");
-		//  #endif
+		// #endif
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -327,147 +266,142 @@ public class ChatWindow extends javax.swing.JFrame implements ChatProvider{
 		jTextFieldName.setText("Unknown");
 
 		jLabel1.setText("Name:");
-		
-		
+
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
+
+		// ****** framework plugins code ******
+		SequentialGroup pluginButtonsHorizontal = layout.createSequentialGroup();
+		ParallelGroup pluginButtonsVertical = layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE);
 		
-		GroupLayout.SequentialGroup pluginGroup = layout.createSequentialGroup();
+		for (int i = 0; i < buttonPlugins.size(); i++) {
+			ButtonPlugin buttonPlugin = buttonPlugins.get(i);
+
+			JButton buttonPluginButton = new JButton();
+			buttonPluginButton.setText(buttonPlugin.getButtonText());
+
+			buttonPluginButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					buttonPlugin.ButtonClicked();
+				}
+			});
+
+			pluginButtonsHorizontal.addComponent(buttonPluginButton);
+			pluginButtonsVertical.addComponent(buttonPluginButton);
+		}
 		
-		pluginGroup.addComponent(button);
-		
-		
-		GroupLayout.ParallelGroup horizontal = layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+		for (int i = 0; i < comboBoxPlugins.size(); i++){
+			ComboBoxPlugin comboBoxPlugin = comboBoxPlugins.get(i);
+			
+			JComboBox comboBox = new JComboBox(comboBoxPlugin.getComboBoxList());
+
+			comboBox.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+					comboBoxPlugin.ComboBoxClicked(evt);
+				}	
+			});
+			
+			pluginButtonsHorizontal.addComponent(comboBox);
+			pluginButtonsVertical.addComponent(comboBox);
+		}
+		// ******* end of framework plugins code *******
+
+		layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 				.addComponent(jScrollPane1)
 				.addGroup(layout.createSequentialGroup().addComponent(jTextFieldMessage)
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jButtonSend)
-						.addPreferredGap(
-								javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						
-						)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+				)
+				
+				.addGroup(pluginButtonsHorizontal)
+				
 				.addGroup(layout.createSequentialGroup()
-						
-						// #if changeChatBgColor
-						.addComponent(jButtonChatBgColor)
-						// #endif
-						
+
 						// #if changeSize
 						.addComponent(jTextFieldFontsize)
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 						.addComponent(jButtonFontsize)
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 						// #endif
-						
-						// #if changeType
-						.addComponent(jComboBoxFonttype)
-						// #endif
-						
+
 						// #if changeStyle
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jButtonBold)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jButtonItalic)
+				// #endif
+
+				).addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup().addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING).addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup().addComponent(jLabel1).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jTextFieldName)).addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+
+						// #if setAbout
+						.addComponent(jLabelGender).addComponent(jRadioButtonMale)
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jButtonBold)
+						.addComponent(jRadioButtonFemale)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+						.addComponent(jLabelBirthday)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+						.addComponent(jTextFieldDate, javax.swing.GroupLayout.PREFERRED_SIZE, 221,
+								javax.swing.GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+						.addComponent(jLabelEMail)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+						.addComponent(jTextFieldEMail, javax.swing.GroupLayout.PREFERRED_SIZE, 221,
+								javax.swing.GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+		// #endif
+
+		).addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+				.addComponent(jRadioButtonServer).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+				.addComponent(jRadioButtonClient)
+				.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 255, Short.MAX_VALUE)
+				.addComponent(jLabelHost).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+				.addComponent(jTextFieldHostname, javax.swing.GroupLayout.PREFERRED_SIZE, 221,
+						javax.swing.GroupLayout.PREFERRED_SIZE)
+				.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jLabelPort)
+				.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jTextFieldPort,
+						javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)))
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jButtonItalic)
-						// #endif
-						
-						)
-				.addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-								.addGroup(javax.swing.GroupLayout.Alignment.LEADING,
-										layout.createSequentialGroup().addComponent(jLabel1)
-												.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-												.addComponent(jTextFieldName))
-								.addGroup(javax.swing.GroupLayout.Alignment.LEADING,
-										layout.createSequentialGroup()
-										
-												// #if setAbout
-												.addComponent(jLabelGender).addComponent(jRadioButtonMale)
-												.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-												.addComponent(jRadioButtonFemale)
-												.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10,
-														Short.MAX_VALUE)
-												.addComponent(jLabelBirthday)
-												.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10,
-														Short.MAX_VALUE)
-												.addComponent(jTextFieldDate, javax.swing.GroupLayout.PREFERRED_SIZE,
-														221, javax.swing.GroupLayout.PREFERRED_SIZE)
-												.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10,
-														Short.MAX_VALUE)
-												.addComponent(jLabelEMail)
-												.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10,
-														Short.MAX_VALUE)
-												.addComponent(jTextFieldEMail, javax.swing.GroupLayout.PREFERRED_SIZE,
-														221, javax.swing.GroupLayout.PREFERRED_SIZE)
-												.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10,
-														Short.MAX_VALUE)
-												// #endif
-												
-										)
-								.addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-										.addComponent(jRadioButtonServer)
-										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(jRadioButtonClient)
-										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 255,
-												Short.MAX_VALUE)
-										.addComponent(jLabelHost)
-										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(jTextFieldHostname, javax.swing.GroupLayout.PREFERRED_SIZE, 221,
-												javax.swing.GroupLayout.PREFERRED_SIZE)
-										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(jLabelPort)
-										.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-										.addComponent(jTextFieldPort, javax.swing.GroupLayout.PREFERRED_SIZE, 76,
-												javax.swing.GroupLayout.PREFERRED_SIZE)))
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						
-						.addGroup(pluginGroup)
-						
 						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-								
+
 								// #if setNickname
 								.addComponent(jButtonUpdateName, javax.swing.GroupLayout.DEFAULT_SIZE,
 										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 								// #endif
-								
+
 								.addComponent(jToggleButtonOnline, javax.swing.GroupLayout.DEFAULT_SIZE,
-										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-);
-		
-		GroupLayout.ParallelGroup vertical = layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))));
+
+		layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 				.addGroup(layout.createSequentialGroup()
 						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
 								.addComponent(jRadioButtonServer).addComponent(jRadioButtonClient)
 								.addComponent(jToggleButtonOnline)
 								.addComponent(jTextFieldHostname, javax.swing.GroupLayout.PREFERRED_SIZE,
 										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addComponent(jLabelHost).addComponent(jLabelPort)
-								.addComponent(jTextFieldPort, javax.swing.GroupLayout.PREFERRED_SIZE,
-										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+								.addComponent(jLabelHost).addComponent(jLabelPort).addComponent(jTextFieldPort,
+										javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+										javax.swing.GroupLayout.PREFERRED_SIZE))
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
 								.addComponent(jTextFieldName, javax.swing.GroupLayout.PREFERRED_SIZE,
 										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
 								.addComponent(jLabel1)
-								
+
 								// #if setNickname
 								.addComponent(jButtonUpdateName)
-								// #endif
-								
-								)
-						
+						// #endif
+
+						)
+
 						// #if setAbout
 						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-								.addComponent(jLabelGender)
-								.addComponent(jRadioButtonMale)
-								.addComponent(jRadioButtonFemale)
-								.addComponent(jLabelBirthday)
+								.addComponent(jLabelGender).addComponent(jRadioButtonMale)
+								.addComponent(jRadioButtonFemale).addComponent(jLabelBirthday)
 								.addComponent(jTextFieldDate, javax.swing.GroupLayout.PREFERRED_SIZE,
 										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addComponent(jLabelEMail).
-								addComponent(jTextFieldEMail,
+								.addComponent(jLabelEMail).addComponent(jTextFieldEMail,
 										javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
 										javax.swing.GroupLayout.PREFERRED_SIZE))
 						// #endif
-						
+
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 						.addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 433, Short.MAX_VALUE)
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -475,45 +409,26 @@ public class ChatWindow extends javax.swing.JFrame implements ChatProvider{
 								.addComponent(jTextFieldMessage, javax.swing.GroupLayout.PREFERRED_SIZE,
 										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
 								.addComponent(jButtonSend)
-								
-								
-								)
+						)
 						
-						.addGroup(pluginGroup)
+						.addGroup(pluginButtonsVertical)
+						
 						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-								
-								// #if changeChatBgColor
-								.addComponent(jButtonChatBgColor)
-								// #endif
-								
+
 								// #if changeSize
 								.addComponent(jTextFieldFontsize, javax.swing.GroupLayout.PREFERRED_SIZE,
-										javax.swing.GroupLayout.DEFAULT_SIZE,
-										javax.swing.GroupLayout.PREFERRED_SIZE)
+										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
 								.addComponent(jButtonFontsize)
 								// #endif
 								
-								// #if changeType
-								.addComponent(jComboBoxFonttype)
-								// #endif
-								
 								// #if changeStyle
-								.addComponent(jButtonBold)
-								.addComponent(jButtonItalic)
+								.addComponent(jButtonBold).addComponent(jButtonItalic)
 								// #endif
-								
-								
-								));
-		
-		
-		horizontal.addComponent(button);
-		vertical.addComponent(button);
-		
-		
-		layout.setHorizontalGroup(horizontal);
-		layout.setVerticalGroup(vertical);
+
+		)));
+
 		pack();
-	
+
 	}// </editor-fold>//GEN-END:initComponents
 
 	private void jRadioButtonServerActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jRadioButtonServerActionPerformed
@@ -587,10 +502,6 @@ public class ChatWindow extends javax.swing.JFrame implements ChatProvider{
 		}
 	}// GEN-LAST:event_jTextFieldMessageKeyTyped
 
-	private void jButtonClearActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonClearActionPerformed
-		jTextAreaChat.setText("");
-	}// GEN-LAST:event_jButtonClearActionPerformed
-
 	private void jButtonUpdateNameActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonUpdateNameActionPerformed
 		Client client = JavaChat.getClient();
 		if (client != null) {
@@ -614,7 +525,7 @@ public class ChatWindow extends javax.swing.JFrame implements ChatProvider{
 				System.out.println("exception: " + e.getMessage());
 			}
 			// #else
-//@			client.setName(name);
+			// @ client.setName(name);
 			// #endif
 
 		}
@@ -625,11 +536,11 @@ public class ChatWindow extends javax.swing.JFrame implements ChatProvider{
 		jRadioButtonClient.setEnabled(!lock);
 		jTextFieldHostname.setEnabled(!lock && !jRadioButtonServer.isSelected());
 		jTextFieldPort.setEnabled(!lock);
-		
+
 		// #if setNickname
 		jButtonUpdateName.setEnabled(lock);
 		// #endif
-		
+
 	}
 
 	/**

@@ -1,9 +1,16 @@
 package javachat;
 
 import java.net.ConnectException;
+import java.util.ArrayList;
+import java.util.List;
+
+import interfaces.ButtonPlugin;
+import interfaces.ComboBoxPlugin;
 import javachat.network.Client;
 import javachat.network.Server;
 import javachat.ui.ChatWindow;
+import plugins.ChangeChatBgColor;
+import plugins.ChangeFontType;
 import plugins.ClearChat;
 
 /**
@@ -160,10 +167,16 @@ public class JavaChat {
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			@Override
 			
-			
-			
 			public void run() {
-				instance = new ChatWindow(new ClearChat());
+				
+				ArrayList<ButtonPlugin> buttonPlugins = new ArrayList<ButtonPlugin>();
+				ArrayList<ComboBoxPlugin> comboBoxPlugins = new ArrayList<ComboBoxPlugin>();
+				
+				buttonPlugins.add(new ClearChat());
+				buttonPlugins.add(new ChangeChatBgColor());
+				comboBoxPlugins.add(new ChangeFontType());
+				
+				instance = new ChatWindow(buttonPlugins, comboBoxPlugins);
 				instance.setVisible(true);
 			}
 		});

@@ -1,20 +1,30 @@
 package plugins;
 
-import javachat.ui.ChatProvider;
-import javachat.ui.Plugin;
+import java.awt.Color;
 
-public class ClearChat implements Plugin {
+import javax.swing.JColorChooser;
+
+import interfaces.ButtonPlugin;
+import interfaces.ChatProvider;
+
+public class ClearChat implements ButtonPlugin {
 
 	private ChatProvider cp;
 	
 	@Override
 	public String getButtonText() {
-		return "Clear";
+		return "Chat BG-Color";
 	}
 
 	@Override
 	public void ButtonClicked() {
-		cp.getChatField().setText("");
+		Color initialBackground = this.cp.getChatField().getBackground();
+
+		Color background = JColorChooser.showDialog(null, "Change Button Background",
+				initialBackground);
+		if (background != null) {
+			this.cp.getChatField().setBackground(background);
+		}
 	}
 
 	@Override
