@@ -10,7 +10,11 @@ import javachat.network.Client;
 import javachat.network.Server;
 import javachat.ui.ChatWindow;
 import plugins.ChangeChatBgColor;
+import plugins.ChangeFontSize;
 import plugins.ChangeFontType;
+import plugins.ChatBold;
+import plugins.ChatItalic;
+import plugins.ChatNormal;
 import plugins.ClearChat;
 
 /**
@@ -174,7 +178,11 @@ public class JavaChat {
 				
 				buttonPlugins.add(new ClearChat());
 				buttonPlugins.add(new ChangeChatBgColor());
+				buttonPlugins.add(new ChatBold());
+				buttonPlugins.add(new ChatItalic());
+				buttonPlugins.add(new ChatNormal());
 				comboBoxPlugins.add(new ChangeFontType());
+				comboBoxPlugins.add(new ChangeFontSize());
 				
 				instance = new ChatWindow(buttonPlugins, comboBoxPlugins);
 				instance.setVisible(true);

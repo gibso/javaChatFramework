@@ -23,10 +23,11 @@ public class ChangeFontType implements ComboBoxPlugin {
 		// Change Fonttype to chosen font
 		JComboBox cb = (JComboBox) evt.getSource();
 		String fontName = (String) cb.getSelectedItem();
-		int fontsize = cp.getChatField().getFont().getSize();
+		int fontSize = cp.getChatField().getFont().getSize();
+		int fontType = cp.getChatField().getFont().getStyle();
 
 		// get the correct TextField
-		cp.getChatField().setFont(new Font(fontName, Font.PLAIN, fontsize));		
+		cp.getChatField().setFont(new Font(fontName, fontType, fontSize));		
 	}
 
 	@Override

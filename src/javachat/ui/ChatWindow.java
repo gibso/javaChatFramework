@@ -57,20 +57,6 @@ public class ChatWindow extends JFrame implements ChatProvider {
 	private javax.swing.JToggleButton jToggleButtonOnline;
 	// End of variables declaration//GEN-END:variables
 
-	// #if changeSize
-	private javax.swing.JTextField jTextFieldFontsize;
-	private javax.swing.JButton jButtonFontsize;
-	// #endif
-
-//	// #if changeType
-//	private javax.swing.JComboBox jComboBoxFonttype;
-//	// #endif
-
-	// #if changeStyle
-	private javax.swing.JButton jButtonBold;
-	private javax.swing.JButton jButtonItalic;
-	// #endif
-
 	// #if setAbout
 	private javax.swing.ButtonGroup buttonGroupGender;
 	private javax.swing.JRadioButton jRadioButtonMale;
@@ -140,56 +126,6 @@ public class ChatWindow extends JFrame implements ChatProvider {
 		jButtonUpdateName.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				jButtonUpdateNameActionPerformed(evt);
-			}
-		});
-		// #endif
-
-		// #if changeSize
-		jTextFieldFontsize = new javax.swing.JTextField();
-		jButtonFontsize = new javax.swing.JButton();
-
-		jTextFieldFontsize.setText("12");
-		jButtonFontsize.setText("Set Size");
-		jButtonFontsize.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jButtonFontsizeActionPerformed(evt);
-			}
-
-			private void jButtonFontsizeActionPerformed(ActionEvent evt) {
-
-				// Change Fontsize to chosen Number
-				int newFontsize = Integer.parseInt(jTextFieldFontsize.getText());
-
-				// get the correct TextField
-				Font chatFont = jTextAreaChat.getFont();
-				jTextAreaChat.setFont(new Font(chatFont.getName(), Font.PLAIN, newFontsize));
-			}
-		});
-		// #endif
-
-		// #if changeStyle
-		jButtonBold = new javax.swing.JButton();
-		jButtonItalic = new javax.swing.JButton();
-
-		jButtonBold.setText("B");
-		jButtonBold.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jButtonBoldActionPerformed(evt);
-			}
-
-			private void jButtonBoldActionPerformed(ActionEvent evt) {
-				// TODO Auto-generated method stub
-			}
-		});
-
-		jButtonItalic.setText("Italic");
-		jButtonItalic.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jButtonItalicActionPerformed(evt);
-			}
-
-			private void jButtonItalicActionPerformed(ActionEvent evt) {
-				// TODO Auto-generated method stub
 			}
 		});
 		// #endif
@@ -317,18 +253,6 @@ public class ChatWindow extends JFrame implements ChatProvider {
 				
 				.addGroup(layout.createSequentialGroup()
 
-						// #if changeSize
-						.addComponent(jTextFieldFontsize)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jButtonFontsize)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						// #endif
-
-						// #if changeStyle
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jButtonBold)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jButtonItalic)
-				// #endif
-
 				).addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup().addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING).addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup().addComponent(jLabel1).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jTextFieldName)).addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
 
 						// #if setAbout
@@ -414,16 +338,6 @@ public class ChatWindow extends JFrame implements ChatProvider {
 						.addGroup(pluginButtonsVertical)
 						
 						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-
-								// #if changeSize
-								.addComponent(jTextFieldFontsize, javax.swing.GroupLayout.PREFERRED_SIZE,
-										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addComponent(jButtonFontsize)
-								// #endif
-								
-								// #if changeStyle
-								.addComponent(jButtonBold).addComponent(jButtonItalic)
-								// #endif
 
 		)));
 
