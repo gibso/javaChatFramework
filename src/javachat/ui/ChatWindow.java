@@ -15,31 +15,34 @@ import java.util.Locale;
 import javachat.network.Client;
 import javachat.JavaChat;
 import javax.swing.BoundedRangeModel;
+import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout.ParallelGroup;
 import javax.swing.GroupLayout.SequentialGroup;
 
+import interfaces.AboutPlugin;
 import interfaces.ButtonPlugin;
 import interfaces.ChatProvider;
+import interfaces.ClientProvider;
 import interfaces.ComboBoxPlugin;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollBar;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-public class ChatWindow extends JFrame implements ChatProvider {
+public class ChatWindow extends JFrame implements ChatProvider, ClientProvider {
 
 	// Variables declaration - do not modify//GEN-BEGIN:variables
 	private javax.swing.ButtonGroup buttonGroupModeType;
 
 	private javax.swing.JButton jButtonSend;
 
-	// #if setNickname
-	private javax.swing.JButton jButtonUpdateName;
-	// #endif
 
 	private javax.swing.JLabel jLabel1;
 	private javax.swing.JLabel jLabelHost;
@@ -57,27 +60,21 @@ public class ChatWindow extends JFrame implements ChatProvider {
 	private javax.swing.JToggleButton jToggleButtonOnline;
 	// End of variables declaration//GEN-END:variables
 
-	// #if setAbout
-	private javax.swing.ButtonGroup buttonGroupGender;
-	private javax.swing.JRadioButton jRadioButtonMale;
-	private javax.swing.JRadioButton jRadioButtonFemale;
-	private javax.swing.JTextField jTextFieldDate;
-	private javax.swing.JTextField jTextFieldEMail;
-	private javax.swing.JLabel jLabelGender;
-	private javax.swing.JLabel jLabelBirthday;
-	private javax.swing.JLabel jLabelEMail;
-	// #endif
-
 	// framework variables
 	private ArrayList<ButtonPlugin> buttonPlugins;
 	private ArrayList<ComboBoxPlugin> comboBoxPlugins;
+	private ArrayList<AboutPlugin> aboutplugin;
+	private JRadioButton RadioButtonMale;
+	private JRadioButton RadioButtonFemale;
+	private JTextField TextFieldDate;
 	
 	/**
 	 * Creates new form ChatWindow
 	 */
-	public ChatWindow(ArrayList<ButtonPlugin> buttonPlugins, ArrayList<ComboBoxPlugin> comboBoxPlugins) {
+	public ChatWindow(ArrayList<ButtonPlugin> buttonPlugins, ArrayList<ComboBoxPlugin> comboBoxPlugins, ArrayList<AboutPlugin> aboutplugin) {
 		this.buttonPlugins = buttonPlugins;
 		this.comboBoxPlugins = comboBoxPlugins;
+		this.aboutplugin = aboutplugin;
 
 		for (int i = 0; i < buttonPlugins.size(); i++) {
 			buttonPlugins.get(i).register(this);
@@ -85,6 +82,10 @@ public class ChatWindow extends JFrame implements ChatProvider {
 
 		for (int i = 0; i < comboBoxPlugins.size(); i++) {
 			comboBoxPlugins.get(i).register(this);
+		}
+		
+		for (int i = 0; i < aboutplugin.size(); i++) {
+			aboutplugin.get(i).register(this);
 		}
 
 		initComponents();
@@ -117,38 +118,6 @@ public class ChatWindow extends JFrame implements ChatProvider {
 		jButtonSend = new javax.swing.JButton();
 		jTextFieldName = new javax.swing.JTextField();
 		jLabel1 = new javax.swing.JLabel();
-
-		// #if setNickname
-		jButtonUpdateName = new javax.swing.JButton();
-
-		jButtonUpdateName.setText("Update Name");
-		jButtonUpdateName.setEnabled(false);
-		jButtonUpdateName.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jButtonUpdateNameActionPerformed(evt);
-			}
-		});
-		// #endif
-
-		// #if setAbout
-		jLabelBirthday = new javax.swing.JLabel();
-		jLabelGender = new javax.swing.JLabel();
-		jLabelEMail = new javax.swing.JLabel();
-		buttonGroupGender = new javax.swing.ButtonGroup();
-		jRadioButtonMale = new javax.swing.JRadioButton();
-		jRadioButtonFemale = new javax.swing.JRadioButton();
-		jTextFieldEMail = new javax.swing.JTextField();
-		jTextFieldDate = new javax.swing.JTextField();
-
-		buttonGroupGender.add(jRadioButtonMale);
-		jRadioButtonMale.setText("Male");
-		buttonGroupGender.add(jRadioButtonFemale);
-		jRadioButtonFemale.setSelected(true);
-		jRadioButtonFemale.setText("Female");
-		jLabelGender.setText("Gender:");
-		jLabelBirthday.setText("Birthday:");
-		jLabelEMail.setText("Email-Address:");
-		// #endif
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -240,6 +209,60 @@ public class ChatWindow extends JFrame implements ChatProvider {
 			pluginButtonsHorizontal.addComponent(comboBox);
 			pluginButtonsVertical.addComponent(comboBox);
 		}
+		
+		SequentialGroup aboutHorizontal = layout.createSequentialGroup();
+		ParallelGroup aboutVertical = layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE);
+		
+		for (int i = 0; i < aboutplugin.size(); i++) {
+			AboutPlugin aboutPlugin = aboutplugin.get(i);
+			
+			JLabel LabelBirthday = new JLabel();
+			JLabel LabelGender = new JLabel();
+			JLabel LabelEMail = new JLabel();
+			ButtonGroup buttonGroupGender = new ButtonGroup();
+			JRadioButton RadioButtonMale = new JRadioButton();
+			JRadioButton RadioButtonFemale = new JRadioButton();
+			JTextField TextFieldEMail = new JTextField();
+			JTextField TextFieldDate = new JTextField();
+			JButton ButtonUpdateName = new JButton();
+			
+			this.RadioButtonMale = RadioButtonMale;
+			this.RadioButtonFemale = RadioButtonFemale;
+			this.TextFieldDate = TextFieldDate;
+			
+			buttonGroupGender.add(RadioButtonMale);
+			RadioButtonMale.setText("Male");
+			buttonGroupGender.add(RadioButtonFemale);
+			RadioButtonFemale.setSelected(true);
+			RadioButtonFemale.setText("Female");
+			LabelGender.setText("Gender:");
+			LabelBirthday.setText("Birthday:");
+			LabelEMail.setText("Email-Address:");
+			ButtonUpdateName.setText(aboutPlugin.getButtonText());
+
+			ButtonUpdateName.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					aboutPlugin.ButtonClicked();
+				}
+			});
+
+			aboutHorizontal.addComponent(LabelGender);
+			aboutHorizontal.addComponent(RadioButtonMale);
+			aboutHorizontal.addComponent(RadioButtonFemale);
+			aboutHorizontal.addComponent(LabelEMail);
+			aboutHorizontal.addComponent(TextFieldEMail);
+			aboutHorizontal.addComponent(LabelBirthday);
+			aboutHorizontal.addComponent(TextFieldDate);
+			aboutHorizontal.addComponent(ButtonUpdateName);
+			aboutVertical.addComponent(LabelGender);
+			aboutVertical.addComponent(RadioButtonMale);
+			aboutVertical.addComponent(RadioButtonFemale);
+			aboutVertical.addComponent(LabelEMail);
+			aboutVertical.addComponent(TextFieldEMail);
+			aboutVertical.addComponent(LabelBirthday);
+			aboutVertical.addComponent(TextFieldDate);
+			aboutVertical.addComponent(ButtonUpdateName);
+		}
 		// ******* end of framework plugins code *******
 
 		layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -250,27 +273,11 @@ public class ChatWindow extends JFrame implements ChatProvider {
 				)
 				
 				.addGroup(pluginButtonsHorizontal)
+				.addGroup(aboutHorizontal)
 				
 				.addGroup(layout.createSequentialGroup()
 
 				).addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup().addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING).addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup().addComponent(jLabel1).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jTextFieldName)).addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-
-						// #if setAbout
-						.addComponent(jLabelGender).addComponent(jRadioButtonMale)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jRadioButtonFemale)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
-						.addComponent(jLabelBirthday)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
-						.addComponent(jTextFieldDate, javax.swing.GroupLayout.PREFERRED_SIZE, 221,
-								javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
-						.addComponent(jLabelEMail)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
-						.addComponent(jTextFieldEMail, javax.swing.GroupLayout.PREFERRED_SIZE, 221,
-								javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
-		// #endif
 
 		).addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
 				.addComponent(jRadioButtonServer).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -284,11 +291,6 @@ public class ChatWindow extends JFrame implements ChatProvider {
 						javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)))
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-
-								// #if setNickname
-								.addComponent(jButtonUpdateName, javax.swing.GroupLayout.DEFAULT_SIZE,
-										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								// #endif
 
 								.addComponent(jToggleButtonOnline, javax.swing.GroupLayout.DEFAULT_SIZE,
 										javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))));
@@ -308,24 +310,7 @@ public class ChatWindow extends JFrame implements ChatProvider {
 								.addComponent(jTextFieldName, javax.swing.GroupLayout.PREFERRED_SIZE,
 										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
 								.addComponent(jLabel1)
-
-								// #if setNickname
-								.addComponent(jButtonUpdateName)
-						// #endif
-
 						)
-
-						// #if setAbout
-						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-								.addComponent(jLabelGender).addComponent(jRadioButtonMale)
-								.addComponent(jRadioButtonFemale).addComponent(jLabelBirthday)
-								.addComponent(jTextFieldDate, javax.swing.GroupLayout.PREFERRED_SIZE,
-										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addComponent(jLabelEMail).addComponent(jTextFieldEMail,
-										javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
-										javax.swing.GroupLayout.PREFERRED_SIZE))
-						// #endif
-
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 						.addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 433, Short.MAX_VALUE)
 						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -336,6 +321,7 @@ public class ChatWindow extends JFrame implements ChatProvider {
 						)
 						
 						.addGroup(pluginButtonsVertical)
+						.addGroup(aboutVertical)
 						
 						.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
 
@@ -357,25 +343,6 @@ public class ChatWindow extends JFrame implements ChatProvider {
 		if (jToggleButtonOnline.isSelected()) {
 			boolean connected = false;
 			String name = jTextFieldName.getText();
-
-			// #if setAbout
-			String birthdayStr = jTextFieldDate.getText();
-			DateFormat format = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN);
-			try {
-				Date birthday = format.parse(birthdayStr);
-				String gender = "";
-				if (jRadioButtonMale.isSelected())
-					gender = " (m) ";
-				if (jRadioButtonFemale.isSelected())
-					gender = " (f) ";
-
-				int age = new Date().getYear() - birthday.getYear();
-				name = name + gender + age;
-
-			} catch (ParseException e) {
-				System.out.println("exception: " + e.getMessage());
-			}
-			// #endif
 
 			// Connect
 			if (jRadioButtonServer.isSelected()) {
@@ -416,45 +383,11 @@ public class ChatWindow extends JFrame implements ChatProvider {
 		}
 	}// GEN-LAST:event_jTextFieldMessageKeyTyped
 
-	private void jButtonUpdateNameActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonUpdateNameActionPerformed
-		Client client = JavaChat.getClient();
-		if (client != null) {
-			String name = jTextFieldName.getText();
-
-			// #if setAbout
-			String birthdayStr = jTextFieldDate.getText();
-			DateFormat format = new SimpleDateFormat("dd.MM.yyyy", Locale.GERMAN);
-			try {
-				Date birthday = format.parse(birthdayStr);
-				String gender = "";
-				if (jRadioButtonMale.isSelected())
-					gender = " (m) ";
-				if (jRadioButtonFemale.isSelected())
-					gender = " (f) ";
-
-				int age = new Date().getYear() - birthday.getYear();
-				name = name + gender + age;
-				client.setName(name);
-			} catch (ParseException e) {
-				System.out.println("exception: " + e.getMessage());
-			}
-			// #else
-			// @ client.setName(name);
-			// #endif
-
-		}
-	}// GEN-LAST:event_jButtonUpdateNameActionPerformed
-
 	private void lockServerDetails(boolean lock) {
 		jRadioButtonServer.setEnabled(!lock);
 		jRadioButtonClient.setEnabled(!lock);
 		jTextFieldHostname.setEnabled(!lock && !jRadioButtonServer.isSelected());
 		jTextFieldPort.setEnabled(!lock);
-
-		// #if setNickname
-		jButtonUpdateName.setEnabled(lock);
-		// #endif
-
 	}
 
 	/**
@@ -500,5 +433,40 @@ public class ChatWindow extends JFrame implements ChatProvider {
 	@Override
 	public JTextArea getChatField() {
 		return jTextAreaChat;
+	}
+
+	@Override
+	public Client getClient() {
+		Client client = JavaChat.getClient();
+		return client;
+	}
+
+	@Override
+	public Client setUser(String name) {
+		Client client = JavaChat.getClient();
+		client.setName(name);
+		return null;
+	}
+
+	@Override
+	public String getBirthday() {
+		String name = TextFieldDate.getText();
+		return name;
+	}
+
+	@Override
+	public String getGender() {
+		String gender = "";
+		if (RadioButtonMale.isSelected())
+			gender = " (m) ";
+		if (RadioButtonFemale.isSelected())
+			gender = " (f) ";
+		return gender;
+	}
+
+	@Override
+	public String getnewName() {
+		String name = jTextFieldName.getText();
+		return name;
 	}
 }

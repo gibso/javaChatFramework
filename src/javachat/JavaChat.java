@@ -4,6 +4,7 @@ import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.List;
 
+import interfaces.AboutPlugin;
 import interfaces.ButtonPlugin;
 import interfaces.ComboBoxPlugin;
 import javachat.network.Client;
@@ -16,6 +17,7 @@ import plugins.ChatBold;
 import plugins.ChatItalic;
 import plugins.ChatNormal;
 import plugins.ClearChat;
+import plugins.SetAbout;
 
 /**
  * Main class for Java Chat
@@ -175,6 +177,7 @@ public class JavaChat {
 				
 				ArrayList<ButtonPlugin> buttonPlugins = new ArrayList<ButtonPlugin>();
 				ArrayList<ComboBoxPlugin> comboBoxPlugins = new ArrayList<ComboBoxPlugin>();
+				ArrayList<AboutPlugin> aboutplugin = new ArrayList<AboutPlugin>();
 				
 				buttonPlugins.add(new ClearChat());
 				buttonPlugins.add(new ChangeChatBgColor());
@@ -183,8 +186,9 @@ public class JavaChat {
 				buttonPlugins.add(new ChatNormal());
 				comboBoxPlugins.add(new ChangeFontType());
 				comboBoxPlugins.add(new ChangeFontSize());
+				aboutplugin.add(new SetAbout());
 				
-				instance = new ChatWindow(buttonPlugins, comboBoxPlugins);
+				instance = new ChatWindow(buttonPlugins, comboBoxPlugins, aboutplugin);
 				instance.setVisible(true);
 			}
 		});
